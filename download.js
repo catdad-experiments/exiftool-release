@@ -5,6 +5,8 @@ const waitForThrowable = require('wait-for-throwable');
 
 const EXIFTOOL_RSS = 'https://sourceforge.net/projects/exiftool/rss?path=/';
 
+const retry = async (func) => await waitForThrowable(func, { interval: 1000, total: Infinity, count: 10 });
+
 const fetchOk = async (url) => {
   const res = await fetch(url, {
     headers: {
@@ -60,7 +62,7 @@ const start = Date.now();
 
 (async () => {
   const githubFiles = await getExistingReleaseFiles();
-  const rssFiles = await getRssFiles();
+  const rssFiles = await retry(() => getRssFiles());
 
   const filesToUpload = rssFiles.filter(({ name }) => !githubFiles.includes(name));
 
@@ -69,7 +71,7 @@ const start = Date.now();
   for (const { name, link } of filesToUpload) {
     console.log(`getting "${name}" from ${link}`);
 
-    const body = await waitForThrowable(async () => await fetchOk(link), { interval: 1000, total: Infinity, count: 10 });
+    const body = await retry(() => fetchOk(link));
 
     await fs.outputFile(`./dist/${name}`, body);
   }
