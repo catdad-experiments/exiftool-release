@@ -1,0 +1,47 @@
+name: Sync
+
+on:
+  schedule:
+    - cron: 0 20 * * *
+  
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14
+    - run: npm install
+    - run: node download.js
+    - run: ls dist
+      if: ${{ always() }}
+    - name: Create Release
+      if: ${{ always() }}
+      uses: actions/github-script@v2
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          const fs = require('fs').promises;
+          console.log('environment', process.versions);
+
+          const { repo: { owner, repo }, sha, ref } = context;
+          console.log({ owner, repo, sha, ref });
+
+          const release = await github.repos.getReleaseByTag({
+            owner, repo,
+            tag: 'all'
+          });
+
+          console.log('created release', { release });
+          for (let file of await fs.readdir('./dist')) {
+            console.log('uploading', file);
+
+            await github.repos.uploadReleaseAsset({
+              owner, repo,
+              release_id: release.data.id,
+              name: file,
+              data: await fs.readFile(`./dist/${file}`)
+            });            
+          }
