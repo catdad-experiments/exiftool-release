@@ -1,0 +1,28 @@
+{
+  "name": "exiftool-release",
+  "version": "1.0.0",
+  "description": "This repo mirrors the released version of exiftool",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/catdad-experiments/exiftool-release.git"
+  },
+  "keywords": [],
+  "author": "Kiril Vatev <vatev.1@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/catdad-experiments/exiftool-release/issues"
+  },
+  "homepage": "https://github.com/catdad-experiments/exiftool-release#readme",
+  "dependencies": {
+    "fs-extra": "^9.0.1",
+    "node-fetch": "^2.6.1",
+    "rss-url-parser": "^2.1.1",
+    "wait-for-throwable": "^1.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0"
+  }
+}
