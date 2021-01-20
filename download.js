@@ -53,7 +53,20 @@ const getExistingReleaseFiles = async () => {
   const API_ROOT = 'https://api.github.com/repos/catdad-experiments/exiftool-release';
 
   const { id } = await fetchJson(`${API_ROOT}/releases/tags/all`);
-  const assets = await fetchJson(`${API_ROOT}/releases/${id}/assets`);
+
+  const assets = [];
+  let page = 0;
+  let fetchedAll = false;
+
+  while (!fetchedAll) {
+    const pageData = await fetchJson(`${API_ROOT}/releases/${id}/assets?page=${++page}&per_page=50`);
+
+    if (pageData.length) {
+      assets.push(...pageData);
+    } else {
+      fetchedAll = true;
+    }
+  }
 
   return assets.map(({ name }) => name);
 };
