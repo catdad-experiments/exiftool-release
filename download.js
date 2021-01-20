@@ -79,8 +79,8 @@ const start = Date.now();
 
   const filesToUpload = rssFiles.filter(({ name }) => !githubFiles.includes(name));
 
-  console.log(`found ${githubFiles.length} already mirrored in releases`);
-  console.log(`found ${filesToUpload.length} new files:`, filesToUpload);
+  console.log(`found ${githubFiles.length} files already mirrored in releases`);
+  console.log(`found ${filesToUpload.length} new files to sync:\n`, filesToUpload);
 
   await fs.ensureDir('./dist');
 
